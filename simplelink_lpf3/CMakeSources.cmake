@@ -54,8 +54,20 @@ set(SOURCES_DRIVERS_CC23X0
     ECDH.c
 )
 
+set(SOURCES_DRIVERS_CC27XX
+    # Default Simplelink configurations
+    power/PowerCC27XX.c
+
+    # Crypto drivers
+    cryptoutils/cryptokey/CryptoKeyPlaintext.c
+    cryptoutils/sharedresources/CryptoResourceXXF3.c
+    cryptoutils/utils/CryptoUtils.c
+    ECDH.c
+)
+
 list(TRANSFORM SOURCES_DRIVERS_LPF3 PREPEND source/ti/drivers/)
 list(TRANSFORM SOURCES_DRIVERS_CC23X0 PREPEND source/ti/drivers/)
+list(TRANSFORM SOURCES_DRIVERS_CC27XX PREPEND source/ti/drivers/)
 
 set(SOURCES_KERNEL
     # DPL

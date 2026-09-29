@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022-2025, Texas Instruments Incorporated
+ * Copyright (c) 2018-2026, Texas Instruments Incorporated
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -29,41 +29,20 @@
  * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+ /*
+ *  ======== lrf_rfe_binary_ieee_nopll.h ========
+*/
 
-#ifndef ti_drivers_cryptoutils_ecc_ECCParamsTFM_s__include
-#define ti_drivers_cryptoutils_ecc_ECCParamsTFM_s__include
+#ifndef _LRF_RFE_BINARY_IEEE_NOPLL_C
+#define _LRF_RFE_BINARY_IEEE_NOPLL_C
 
-#include <ti/drivers/cryptoutils/ecc/ECCParams.h>
 
-#ifdef __cplusplus
-extern "C" {
+#include <stdint.h>
+
+/* Length of binary image. */
+#define LRF_RFE_BINARY_IEEE_NOPLL_LENGTH 859 
+
+/* Declaration of raw binary. */
+extern const uint32_t LRF_RFE_binary_ieee_nopll[LRF_RFE_BINARY_IEEE_NOPLL_LENGTH];
+
 #endif
-
-/*!
- *  @brief  Returns a pointer to curve params stored in secure memory
- *
- *  @param  curveParams  Points to curve param struct provided by non-secure
- *                       code which references a curve by its name.
- *  @return Pointer to the curve params stored in secure memory.
- */
-const ECCParams_CurveParams *ECCParams_s_getCurveParams(const ECCParams_CurveParams *curveParams);
-
-/*!
- *  @brief  Veneer to extract the curve generator point from an ecliptic curve
- *          description.
- *
- *  @note   See ECCParams_s_getUncompressedGeneratorPoint() in ECCParam.h for full
- *          description, parameters, and return values. PSA_ERROR_PROGRAMMER_ERROR
- *          is an additional return value.
- *
- *  @retval PSA_ERROR_PROGRAMMER_ERROR if any args point to secure addresses.
- */
-int_fast16_t ECCParams_s_getUncompressedGeneratorPoint(const ECCParams_CurveParams *curveParams,
-                                                       uint8_t *buffer,
-                                                       size_t length);
-
-#ifdef __cplusplus
-}
-#endif
-
-#endif /* ti_drivers_cryptoutils_ecc_ECCParamsTFM_s__include */

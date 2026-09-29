@@ -28,8 +28,6 @@
 # OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
 # EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-# All targets in this file are for Cortex-M0P
-
 if(CONFIG_HAS_CC23X0_SDK)
 
   add_subdirectory(source/ti/devices)
@@ -64,6 +62,72 @@ if(CONFIG_HAS_CC23X0_SDK)
   zephyr_library_sources(
     ${SOURCES_DRIVERS_LPF3}
     ${SOURCES_DRIVERS_CC23X0}
+    ${SOURCES_KERNEL}
+    )
+  zephyr_linker_sources(RAM_SECTIONS
+    ${CMAKE_CURRENT_SOURCE_DIR}/source/ti/drivers/dma/dma.ld
+  )
+
+  # Radio Control Layer (RCL) driver
+  if(CONFIG_RCL_DRIVER)
+    zephyr_library_sources(
+        ${SOURCES_RCL}
+        ${SOURCES_RCL_LPF3}
+      )
+    # GCC/Clang/ArmClang workaround:
+    # LRF.c and ble_cs.c contain inline ARM asm
+    # that explicitly clobbers r7. When using -O0 compilation level, these
+    # compilers use r7 as frame pointer, so it's unavailable for inline asm.
+    # Omitting the frame pointer for these files avoids r7 conflicts. IAR is
+    # intentionally excluded because it uses different flags and asm semantics.
+    set_property(SOURCE
+        source/ti/drivers/rcl/LRF.c
+        source/ti/drivers/rcl/handlers/ble_cs.c
+        PROPERTY COMPILE_OPTIONS
+        "$<$<COMPILE_LANG_AND_ID:C,GNU,Clang,ARMClang>:-fomit-frame-pointer>"
+      )
+  endif()
+
+  zephyr_compile_definitions(
+    -DCONFIG_ZEPHYR
+  )
+
+endif()
+
+if(CONFIG_HAS_CC27XXX10_SDK)
+
+  add_subdirectory(source/ti/devices)
+  add_subdirectory(source/ti/boards)
+  add_subdirectory(source/ti/log)
+
+  include(${CMAKE_CURRENT_LIST_DIR}/CMakeSources.cmake)
+
+  if(CONFIG_SOC_CC2745R10_Q1)
+    zephyr_compile_definitions(DeviceFamily_CC27XXX10 ${COMPILER})
+  endif()
+
+  if(CONFIG_SOC_CC2755R10)
+    zephyr_compile_definitions(DeviceFamily_CC27XXX10 ${COMPILER})
+  endif()
+
+  if(CONFIG_SOC_CC2755P10)
+    zephyr_compile_definitions(DeviceFamily_CC27XXX10 ${COMPILER})
+  endif()
+
+  if(CONFIG_SOC_CC2755P20)
+    zephyr_compile_definitions(DeviceFamily_CC27XXX20 ${COMPILER})
+  endif()
+
+  zephyr_include_directories(
+    .
+    source
+    )
+
+  zephyr_library()
+  zephyr_library_compile_definitions(${COMPILER})
+  zephyr_library_sources(
+    ${SOURCES_DRIVERS_LPF3}
+    ${SOURCES_DRIVERS_CC27XX}
     ${SOURCES_KERNEL}
     )
   zephyr_linker_sources(RAM_SECTIONS
